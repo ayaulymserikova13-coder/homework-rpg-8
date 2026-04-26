@@ -1,0 +1,98 @@
+@startuml
+title Template Method Pattern — Tower Floors
+
+abstract class TowerFloor {
+  +final explore(party: List<Hero>): FloorResult
+
+  #announce(): void
+  #setup(party: List<Hero>): void
+  #resolveChallenge(party: List<Hero>): FloorResult
+  #shouldAwardLoot(result: FloorResult): boolean
+  #awardLoot(party: List<Hero>, result: FloorResult): void
+  #cleanup(party: List<Hero>): void
+  #getFloorName(): String
+}
+
+class SkeletonCryptFloor {
+  -skeleton: Monster
+
+  #getFloorName(): String
+  #setup(party: List<Hero>): void
+  #resolveChallenge(party: List<Hero>): FloorResult
+  #awardLoot(party: List<Hero>, result: FloorResult): void
+}
+
+class PoisonTrapFloor {
+  #getFloorName(): String
+  #setup(party: List<Hero>): void
+  #resolveChallenge(party: List<Hero>): FloorResult
+  #awardLoot(party: List<Hero>, result: FloorResult): void
+  #cleanup(party: List<Hero>): void
+}
+
+class RestFloor {
+  #getFloorName(): String
+  #announce(): void
+  #setup(party: List<Hero>): void
+  #resolveChallenge(party: List<Hero>): FloorResult
+  #shouldAwardLoot(result: FloorResult): boolean
+  #awardLoot(party: List<Hero>, result: FloorResult): void
+  #cleanup(party: List<Hero>): void
+}
+
+class DragonLairFloor {
+  -dragon: Monster
+
+  #getFloorName(): String
+  #announce(): void
+  #setup(party: List<Hero>): void
+  #resolveChallenge(party: List<Hero>): FloorResult
+  #awardLoot(party: List<Hero>, result: FloorResult): void
+  #cleanup(party: List<Hero>): void
+}
+
+class FloorResult {
+  -cleared: boolean
+  -damageTaken: int
+  -summary: String
+}
+
+class Hero
+class Monster
+
+TowerFloor <|-- SkeletonCryptFloor
+TowerFloor <|-- PoisonTrapFloor
+TowerFloor <|-- RestFloor
+TowerFloor <|-- DragonLairFloor
+
+TowerFloor --> FloorResult : returns
+TowerFloor --> Hero : uses party
+SkeletonCryptFloor --> Monster : creates
+DragonLairFloor --> Monster : creates
+
+note right of TowerFloor
+explore() is final.
+Subclasses do NOT override it.
+
+Fixed order:
+1. announce()
+2. setup()
+3. resolveChallenge()
+4. shouldAwardLoot()
+5. awardLoot()
+6. cleanup()
+end note
+
+note right of RestFloor
+Overrides hook:
+shouldAwardLoot()
+returns false
+end note
+
+note right of DragonLairFloor
+Overrides hook:
+announce()
+custom boss intro
+end note
+
+@enduml
